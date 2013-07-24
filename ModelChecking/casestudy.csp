@@ -1,0 +1,41 @@
+﻿enum{PI, NewPI, BA, NewBA, NNewPI, Empty};
+
+var loginState = false;
+var personalInformation;
+var balance;
+
+AccountManagement() =  ([loginState == false](register{personalInformation = PI; loginState = true;} 
+  -> PersonalInformation() [] login{loginState = true;} -> PersonalInformation()) 
+  [] [loginState == true]PersonalInformation());
+
+PersonalInformation() =  (editPersonalInformation{personalInformation = NewPI;} -> LogoutProcess())  
+   [] (checkBalance{balance = BA} -> changeBanlance{balance = NewBA} -> LogoutProcess()) [] AddressProcess() [] LogoutProcess();
+
+AddressProcess() = addAddress -> chooseAddress -> (deleteAddress -> PersonalInformation()) [] (modifyAddress -> PersonalInformation());
+
+LogoutProcess() = [loginState == true]logout{loginState = false;} -> AccountManagement();
+
+var RloginState = false;
+var OrdpersonalInformation = Empty;
+var NewpersonalInformation = Empty;
+
+RAccountManagement() =  ([RloginState == false](register{personalInformation = PI; RloginState = true;} 
+  -> RPersonalInformation() [] login{RloginState = true;} -> RPersonalInformation()) 
+  [] [RloginState == true]RPersonalInformation());
+
+RPersonalInformation() =  (editPersonalInformation{OrdpersonalInformation = Empty; NewpersonalInformation = NewPI} -> RLogoutProcess())  
+   [] (checkBalance{balance = BA} -> changeBanlance{balance = NewBA} -> RLogoutProcess()) [] RAddressProcess() [] RLogoutProcess();
+
+RAddressProcess() = addAddress -> chooseAddress -> (deleteAddress -> RPersonalInformation()) [] (modifyAddress -> RPersonalInformation());
+
+RLogoutProcess() = [RloginState == true]logout{RloginState = false;} -> RAccountManagement();
+
+#assert AccountManagement() divergencefree;
+#assert AccountManagement() deadlockfree;
+#assert RAccountManagement() divergencefree;
+#assert RAccountManagement() deadlockfree;
+
+#assert RAccountManagement() refines RAccountManagement();
+#assert RAccountManagement() refines <F> RAccountManagement();
+#assert RAccountManagement() refines <FD> RAccountManagement();
+

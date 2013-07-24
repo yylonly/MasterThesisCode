@@ -1,0 +1,1990 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>DLV EXTERNAL BUILTINS USER MANUAL </title>
+</head>
+<body>
+<div>
+<H1 style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US 
+style="FONT-SIZE: 18pt; mso-ansi-language: EN-US; mso-bidi-font-weight: normal">DLV EXTERNAL 
+BUILTINS USER MANUAL <EM><FONT size=2>(pre-release, evolving - please check home 
+page for latest news and releases)</FONT></EM></SPAN></H1>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<H1 style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: normal; mso-bidi-font-size: 14.0pt"><FONT 
+size=5>Overview<o:p></o:p></FONT></SPAN></H1>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 9.0pt">This 
+manual describes the syntax of <I>external builtins</I>, which provide the 
+opportunity to perform calls to external C++ functions. This feature is realized 
+by introducing “parametric” external predicates, whose extension is not 
+specified through a logic program but explicitly computed through external 
+code.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 9.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 9.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; mso-ansi-language: EN-US">Syntax <o:p></o:p></SPAN></H2>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoBodyText 
+style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US">Within a dlv 
+program, the name of an external builtin is preceded by the conventional 
+‘</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#</SPAN><SPAN 
+lang=EN-US style="FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US">’ 
+symbol. For instance, </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#fatt(X,N)</SPAN><SPAN 
+lang=EN-US style="FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US"> or 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#sum(X,Y)</SPAN><SPAN 
+lang=EN-US style="FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US"> are 
+supposed to be (external defined) builtins. An external builtin can appear 
+inside bodies and constraints only, and cannot be negated nor true 
+negated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; mso-ansi-language: EN-US">Semantics<o:p></o:p></SPAN></H2>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Each 
+external builtin </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#p</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> of 
+arity <I>n</I>, has a C++ boolean function </SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">p’</SPAN></I><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> (called 
+<I><SPAN style="mso-spacerun: yes">&nbsp;</SPAN></I>“oracle”) associated, taking 
+<I>n </I>“constant” arguments. This function is defined by the user. This 
+roughly means that a ground atom </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#p(a<SUB>1</SUB>,...,a<SUB>n</SUB>)</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> is true 
+iff the value returned by </SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">p’</SPAN></I><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">(<I>a</I><SUB>1</SUB>,…,<I>a<SUB>n</SUB></I>)</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> is 
+true.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Example. 
+</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Consider the 
+external predicate </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#fatt(X,Y)</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> 
+implementing the external computation of the factorial function. Its oracle 
+</SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">fatt’</SPAN></I><I><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 7.0pt"> 
+</SPAN></I><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 7.0pt; mso-bidi-font-style: italic">should 
+</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">be implemented such 
+that </SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">fatt’</SPAN></I><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">(<I>a,b</I>)</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> is true 
+iff <I>b </I>is the factorial of </SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">a</SPAN></I><I><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">, 
+</SPAN></I><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">when </SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">X</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> is 
+bounded to </SPAN><I style="mso-bidi-font-style: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">a</SPAN></I><I 
+style="mso-bidi-font-style: normal"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> </SPAN></I><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">and 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">Y</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> to 
+</SPAN><I style="mso-bidi-font-style: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">b</SPAN></I><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Definition</SPAN></B><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">: We 
+call <I>pattern </I>a list of <I>i</I>’s and <I>o</I>’<I>s</I>. An <I>i 
+</I>(input value)<I> </I>is a placeholder for a constant or a bounded variable, 
+whereas an <I>o </I>(output value)<I> </I>is a placeholder for a (still) 
+unbounded variable. Given a list of terms, the corresponding pattern will be a 
+proper row of <I style="mso-bidi-font-style: normal">o’s </I>and <I 
+style="mso-bidi-font-style: normal">i’s</I>. <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><FONT size=3><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">Example. </SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">The 
+corresponding pattern for the list of terms X,b,Y is <I>o,i ,o</I>, supposing 
+that X and Y are unbound.</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></FONT></H2>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Note:</SPAN></B><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> It 
+should be intuitive that a builtin may have associated many different patterns 
+depending on the list of its terms; and even the same list may induce different 
+patterns, depending on the actual binding of the variables. So the user can 
+define more than one oracle function, each one associated to a particular 
+pattern.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><SPAN 
+style="mso-spacerun: yes">&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><FONT size=3><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">Example. </SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">Consider 
+the external builtin </SPAN></FONT><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">#fatt(X,Y)</SPAN><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold"><FONT 
+size=3> which implements the external computation of the factorial. The user may 
+have defined three oracle functions. The one actually invoked will depend on the 
+actual pattern, as told above.<o:p></o:p></FONT></SPAN></H2>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l5 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+lang=EN-US 
+style="FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">o<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#fatt_ii</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> – 
+oracle <I style="mso-bidi-font-style: normal">ii</I> invoked when X and Y are 
+both bound (input). <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l5 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+lang=EN-US 
+style="FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">o<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#fatt_io</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> – 
+oracle <I style="mso-bidi-font-style: normal">io</I> invoked when X is bound 
+(input) and Y not (output). <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 39pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l5 level1 lfo1; tab-stops: list 39.0pt"><SPAN 
+lang=EN-US 
+style="FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">o<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#fatt_oi</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"> – 
+oracle <I style="mso-bidi-font-style: normal">oi</I> invoked when X is not bound 
+(output) while Y is (output). <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">Definition</SPAN></B><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">: The oracle expecting only input 
+terms is called “base oracle”, while others are called “talkative oracles”. 
+Every external builtin MUST have associated at least its base 
+oracle.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US">NOTE: </SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US">It is worth remember that our builtins are 
+intended to be functional with respect to the same function. This means that 
+each oracle must be consistent with the base one. More formally, if </SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">f</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"> is the function implemented by the 
+oracles defining a given builtin, the following must hold:<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN><I style="mso-bidi-font-style: normal">i 
+o<SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;</SPAN>i 
+i<o:p></o:p></I></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>f(a,X) = b <SPAN 
+style="mso-tab-count: 1"></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: Wingdings; mso-ansi-language: EN-US; mso-ascii-font-family: 'Courier New'; mso-hansi-font-family: 'Courier New'; mso-bidi-font-family: 'Courier New'; mso-char-type: symbol; mso-symbol-font-family: Wingdings"><SPAN 
+style="mso-char-type: symbol; mso-symbol-font-family: Wingdings">ó</SPAN></SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"> 
+<SPAN style="mso-tab-count: 1">&nbsp;&nbsp; </SPAN>f(a,b) = 
+true<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; mso-ansi-language: EN-US">Safety</SPAN></B><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p></o:p></SPAN></B></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">While 
+writing dlv programs containing external builtins a couple of things must be 
+regarded in order to write safe rules. A builtin atom is NOT SAFE 
+if:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l9 level1 lfo2; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 8pt; FONT-FAMILY: Wingdings; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt; mso-fareast-font-family: Wingdings; mso-bidi-font-family: Wingdings"><SPAN 
+style="mso-list: Ignore">q<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">There are no proper 
+oracles defined corresponding to the actual pattern induced by the binding 
+within the rule in which appears. <SPAN style="COLOR: #111111">(weak 
+safety)</SPAN>.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l9 level1 lfo2; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 8pt; FONT-FAMILY: Wingdings; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt; mso-fareast-font-family: Wingdings; mso-bidi-font-family: Wingdings"><SPAN 
+style="mso-list: Ignore">q<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">When the builtin 
+belongs to the body of a rule which is inside a recursive cycle: among the list 
+of its terms there is a variable appearing also in the head of the rule and not 
+appearing in some positive standard predicate in the body <SPAN 
+style="COLOR: #111111">(strong safety)</SPAN>.<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Strong 
+safeness constraints are introduced in order to deal with cases which may lead 
+to the generation of an infinite Herbrand universe when employed in recursive 
+rules. Imagine to define an oracle for the builtin #succ such that #succ(A,B) is 
+true if and only if <I>A </I>and <I>B </I>are integers and <I>B </I>= <I>A </I>+ 
+1. The grounding algorithm launched on the rule<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">int(X) 
+:- int(Y), #succ(X,Y).<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">would 
+never reach a fixed point. <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt"><FONT size=3><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt">Example. 
+</SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">S</SPAN><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">uppose 
+that oracles </SPAN></FONT><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">#sqr_io</SPAN><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold"><FONT 
+size=3> and </FONT></SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">#fatt_io</SPAN><FONT 
+size=3><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; mso-ansi-language: EN-US; mso-bidi-font-weight: bold"> 
+are defined in some library. The following rules</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></FONT></H2>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>1</SUB>: 
+head1(S) :- number(N), #sqr(N,S).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>2</SUB>: 
+head2(S1) :- number(N), #fatt(N,S), #sqr(S,S1).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">are 
+safe, since there are proper oracles defined w.r.t. the actual pattern <I>io 
+</I></SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">induced by the binding for both 
+atoms. </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">The 
+following rules, vice versa, are unsafe:<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>1</SUB>: 
+head3(S) :- number(S), #sqr(N, S).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>2</SUB>: 
+head2(S1) :- number(S), #fatt(N,S), #sqr(S,S1).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">In 
+fact, there are no oracles w.r.t. the pattern <I>oi</I></SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">. 
+Thus, in order to make the rule safe, the user should define the oracles 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#sqr_oi 
+</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">and</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"> 
+#fatt_oi </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">in some library, and then 
+import it within the dlv program.</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"> 
+<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">We 
+call this <I>weak safety</I><SPAN style="mso-bidi-font-style: italic">,</SPAN> 
+and it’s applied to non-recursive rules having at least an external builtin atom 
+in the body. When an external builtin atom belongs to the body of a rule which 
+is inside a recursive cycle, the <I style="mso-bidi-font-style: normal">strong 
+safety</I> has to be checked. The following rule:<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>1</SUB>: 
+lessthan(Z) :- lessthan(Y), #succ(Y,Z).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">is 
+not safe, since the variable Z </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">appears 
+in the head of the rule </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">r<SUB>1</SUB></SPAN><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"> 
+but does not appear in any positive standard predicate of the body</SPAN><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">. 
+It would be necessary to write, for instance:<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">r<SUB>1</SUB>: 
+lessthan(Z) :- lessthan(Y), #succ(Y,Z), saving(Z).<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">If 
+there is some unsafe rule, the system exits giving an error message. 
+<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Relaxing 
+Safety<o:p></o:p></SPAN></B></P>
+<P class=MsoFooter style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">The 
+user can, under her responsibility, force the evaluation of even non-safe 
+(w.r.t. external<SPAN style="mso-spacerun: yes">&nbsp; </SPAN>builtins) rules, 
+specifying the "-RBS" (Relaxed Builtin Safety) option at the command line. There 
+are two ways:<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l8 level1 lfo6; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">1.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">-RBS 
+= ALL <o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l8 level1 lfo6; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">2.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">-RBS 
+= builtin_name<SUB>1</SUB>[, builtin_name<SUB>2</SUB>[,. . ., 
+builtin_name<SUB>n</SUB>]]<SPAN style="mso-spacerun: yes">&nbsp;&nbsp; 
+</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">In 
+the first case all the external builtins defined in the dlv program are relaxed. 
+Therefore, all the non-strongly-safe rules containing external builtins in the 
+body will be evaluated anyway. In the second case the "-RBS" option is used 
+specifying the list of the builtins to be relaxed. Builtin names are separated 
+by commas (","). In this case only the non-safe rules containing the external 
+builtins specified in the list are forced to be evaluated. 
+<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Roughly, 
+the "-RBS" option will force the system to evaluate the non-safe rules w.r.t. 
+external builtins, while other lacks of safety will still cause the (usual) 
+abnormal termination.<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">The 
+same behaviour can be obtained within the program, using the #relaxsafety 
+directive. As for the -RBS option, we have two possible uses:<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l7 level1 lfo7; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">1.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#relaxsafety 
+= ALL <o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt 36pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-list: l7 level1 lfo7; tab-stops: list 36.0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN 
+style="mso-list: Ignore">2.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#relaxsafety 
+= builtin_name<SUB>1</SUB>[, builtin_name<SUB>2</SUB>[,. . ., 
+builtin_name<SUB>n</SUB>]]<o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">The 
+effect is of course the same. <o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Note</SPAN></B><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">: 
+The two usages of the option are exclusive; and the specification by the command 
+line or within the program are exclusive.</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoFooter 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; tab-stops: 35.4pt"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; mso-ansi-language: EN-US">Creating Builtins 
+Libraries</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">In 
+order to build builtin libraries there are three files 
+needed:<o:p></o:p></SPAN></P>
+<UL style="MARGIN-TOP: 0cm" type=square>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l6 level1 lfo9; tab-stops: list 36.0pt"><SPAN 
+  lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">extpred.h 
+  (containing signatures of all needed methods)<o:p></o:p></SPAN>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l6 level1 lfo9; tab-stops: list 36.0pt"><SPAN 
+  lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">extpred.o 
+  (the object file that will be linked to the user object 
+  code)<o:p></o:p></SPAN>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l6 level1 lfo9; tab-stops: list 36.0pt"><SPAN 
+  lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">dynamic 
+  (a script helping the user compiling and linking the 
+  code)<o:p></o:p></SPAN></LI></UL>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">Further 
+details follow.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B><SPAN 
+lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">The 
+semantic of a builtin is given by the operational definition of all its oracles, 
+grouped in one or more libraries. Libraries have to be built such that they can 
+be dynamically linked to dlv executable. An header file (namely<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN></SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">"</SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">extpred.h</SPAN><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">") is 
+provided as it contains all things needed to exchange data from/to dlv. 
+</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">More 
+in detail, the </SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt">C++ source code 
+should appear as in the following. <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">NOTE</SPAN></B><SPAN 
+lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">: 
+files defining oracles MUST have “.C” (uppercase) 
+extension.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.5pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT 
+face="Courier New">//////////////////////////////////////////////////////////////////////////////<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">//Dynamic Library for the external 
+predicate<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#include 
+"extpred.h"<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#ifdef 
+__cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">extern "C" {<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">BUILTIN( external_predicate , pattern 
+)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New"><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+</SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New"><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>&lt; C++ instructions 
+&gt;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New"><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; 
+</SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">. . .Other Oracles. . 
+.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#ifdef 
+__cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT 
+face="Courier New">//////////////////////////////////////////////////////////////////////////////<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">It 
+is worth noting that including “</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">extpred.h</SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">” 
+</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt">is 
+mandatory. This header contains some directives and the definition of the 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">CONSTANT</SPAN><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold"> class, 
+which is used in order to give parameters to the C++-defined oracles and manage 
+base-types from/to dlv/C++. Implementations must be enclosed inside the 
+directive </SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-bidi-font-size: 14.5pt"><o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT 
+face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#ifdef 
+__cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">extern "C" {<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">. . . . . <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#ifdef 
+__cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Each 
+oracle function is declared by such an header:<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT 
+size=2><FONT face="Courier New">BUILTIN( external_predicate , pattern 
+)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Where </SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT face="Courier New" size=2>BUILTIN</FONT></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"> is a macro which is defined (in </SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT face="Courier New" size=2>extpred.h</FONT></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">) as:<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#define BUILTIN(name,pattern) bool name##_## pattern 
+(CONSTANT *argv)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US style="mso-ansi-language: EN-US">where name is the external predicate name, and pattern is 
+the pattern of the oracle being implemented. Remember that pattern is 
+essentially a string constituted by “<I style="mso-bidi-font-style: normal">i</I>” (lowercase) and “<I 
+style="mso-bidi-font-style: normal">o</I>” (lowercase); the 
+succession is positional: the j-th position of the pattern string is occupied by 
+an “<I style="mso-bidi-font-style: normal">i</I>” if for the 
+oracle being defined the j-th term is in “input”; </SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">and as it can be easily imagined an “<I 
+style="mso-bidi-font-style: normal">o</I>” means that the 
+j-th term is in “output”. <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Each oracle is a boolean function whose only parameter 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">argv</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; mso-ansi-language: EN-US"> 
+</SPAN><SPAN lang=EN-US style="mso-ansi-language: EN-US">is 
+an array of </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">CONSTANT</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US">s, and the positions 
+contain “input” or “output” parameters depending on the corresponding pattern. 
+</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">Each function name thus encodes the name of the associated 
+external builtin it implements and the pattern which it responds to.<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">NOTE: </SPAN></B><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">in order to try to guarantee a correct execution, dlv 
+catches possible exceptions arising while executing an oracle; this means that 
+whatever goes wrong while the code of the oracle is running will be ignored, and 
+the final result will be assumed as FALSE w.r.t. the matching phase. A message 
+will be put on the standard error, alerting the user about both the (possibly) 
+wrong oracle and the possibly inconsistent answer sets.<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">The 
+</SPAN></B><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">CONSTANT</SPAN></B><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"> 
+class.</SPAN></B><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"> 
+</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">CONSTANT</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"> is a 
+public class defined in </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">extpred.h </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">and, as 
+already said, it provides what is needed <SPAN 
+style="mso-bidi-font-weight: bold">in order to manage 
+parameters for the C++ defined oracles and manage base-types from/to dlv/C++. 
+The methods provided are the following:<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-weight: bold"><o:p>&nbsp;</o:p></SPAN></P>
+<UL style="MARGIN-TOP: 0cm" type=square>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-list: l4 level1 lfo3; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >toInt()</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-list: l4 level1 lfo3; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >toString()</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; COLOR: #111111; TEXT-ALIGN: justify; mso-list: l4 level1 lfo3; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >toSymbol()</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  ><o:p></o:p></SPAN></LI></UL>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">First method returns an integer of according 
+value</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">, while the second and third methods are used to 
+</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">cast from strings (encoded by dlv) to standard C++ string 
+(i.e. char*) types.<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">Below a simple example try to clarify the difference between 
+a DLV string and a DLV symbolic string.<SPAN style="mso-spacerun: yes">&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">In order to create a DLV string (quoted or symbolic), the 
+CONSTANT class has a proper constructor receiving two arguments. The first one 
+is the name of the string, the second one is a boolean (false by default):<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">CONSTANT(const char *name2, bool quoted = false);<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US><FONT color=#111111>If the 
+user wishes to define a DLV string, she must pass <I 
+style="mso-bidi-font-style: normal">true</I> as the second 
+argument. By default, a symbolic DLV string (i.e. a constant) is created. For 
+instance, if the user writes:</FONT></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US><SPAN style="mso-spacerun: yes"><FONT color=#111111>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</FONT></SPAN></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><FONT 
+color=#111111><SPAN lang=EN-US><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'">…CONSTANT(string, true) <o:p></o:p></SPAN></FONT></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US><o:p><FONT color=#111111>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><FONT 
+color=#111111><I><SPAN lang=EN-US>string</SPAN></I><SPAN lang=EN-US> is 
+considered as quoted string (like “<I style="mso-bidi-font-style: normal">ExtendedBuiltin</I>”), while with </SPAN></FONT></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US><o:p><FONT color=#111111>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><FONT 
+color=#111111><SPAN lang=EN-US><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'">…CONSTANT(string) or CONSTANT(string, false)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US><o:p><FONT color=#111111>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoBodyText3 style="MARGIN: 0cm 0cm 0pt"><FONT 
+color=#111111><I><SPAN lang=EN-US>string</SPAN></I><SPAN lang=EN-US> is 
+considered as constant (symbolic string, like <I 
+style="mso-bidi-font-style: normal">red</I>).<SPAN 
+style="mso-spacerun: yes">&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></FONT></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="COLOR: #111111; mso-bidi-font-size: 14.0pt">The rest of the methods within the CONSTANT class are the 
+following:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<UL style="MARGIN-TOP: 0cm" type=square>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l3 level1 lfo4; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >getType</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >returns the type of a </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US"> objec</SPAN><SPAN 
+  lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >t, as enumerated: </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >Integer, Symbol, String, NullConst</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >;</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l3 level1 lfo4; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >isInt</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >returns </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >true</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > if the current object is an </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >Integer</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >, </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >false </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >otherwise;</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l3 level1 lfo4; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >isString</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >returns </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >true</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > if the current object is a </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'" 
+  >quoted</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > s</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >tring</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >, </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >false </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >otherwise;</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l3 level1 lfo4; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >isSymbol</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >returns </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >true</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > if the type of the current object is a </SPAN><SPAN 
+  lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'" 
+  >symbolic</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > s</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >tring</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >, and </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >false </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >otherwise;</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  ><o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l3 level1 lfo4; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >isNull</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >returns </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >true</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  > if the type of the current object is </SPAN><SPAN 
+  lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >NullConst</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >, and </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >false </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'" 
+  >otherwise. In particular an object is NullConst if the 
+  base constructor is invocated;</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  ><o:p></o:p></SPAN></LI></UL>
+<UL style="MARGIN-TOP: 0cm" type=square>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >toString</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): returns the string as non-quoted;<o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >toQuotedString</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): returns the string as quoted;<o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >toSymbol</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): returns the symbol (non-quoted);<o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >toInt</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): returns the integer value of </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  > object;<o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >(): default constructor. Creates a </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  > object of<SPAN style="mso-spacerun: yes" 
+  >&nbsp; </SPAN></SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >NullConst</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  > type;<o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >( const CONSTANT &amp; )<B 
+  style="mso-bidi-font-weight: normal">;<o:p 
+  ></o:p></B></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >operator=</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >( const CONSTANT &amp; );<B 
+  style="mso-bidi-font-weight: normal"><o:p 
+  ></o:p></B></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >( const char *, bool = false)</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >: see above;<o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >CONSTANT</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >( const int &amp; )</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >: see above; <o:p></o:p></SPAN>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >~CONSTANT</SPAN></B><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt" 
+  >();<o:p></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >operator!=</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  > ( const CONSTANT &amp; );<o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-list: l0 level1 lfo8; tab-stops: list 36.0pt" 
+  ><B style="mso-bidi-font-weight: normal" 
+  ><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >operator==</SPAN></B><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  > ( const CONSTANT &amp; ).<o:p 
+  ></o:p></SPAN></LI></UL>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-weight: bold; mso-fareast-font-family: 'MS Mincho'">In order to cast from C++ types back </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">to 
+dlv</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"> it is enough to pass the object as parameter to the 
+constructor. Please note that the default constructor builds a </SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">CONSTANT</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"> as<SPAN style="mso-spacerun: yes">&nbsp; </SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">NullConst</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">.<SPAN style="mso-bidi-font-weight: bold"><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="COLOR: #111111">Moreover comparison and 
+assignment operators for </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'">CONSTANT</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-bidi-font-size: 14.0pt"> objects 
+</SPAN><SPAN lang=EN-US style="COLOR: #111111">are 
+supplied.<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Example. </SPAN></B><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Suppose we have defined </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">the external predicate #fatt(X,Y) implementing the external 
+computation of the factorial function. The user must encode and include a 
+library source file similar to the following:</SPAN><B><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></B></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">//////////////////////////////////////////////////////////////////////////////<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">//Shared Library for the external builtin #fatt<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">//fatt_builtin.C<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#include "extpred.h"<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#ifdef __cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">extern "C" {<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">BUILTIN(fatt,ii)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN><SPAN style="COLOR: #111111"><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;</SPAN>if( 
+argv[0].isInt() &amp;&amp; argv[1].isInt() )<o:p></o:p></SPAN></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN></SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><SPAN style="mso-spacerun: yes">&nbsp;</SPAN><SPAN style="mso-tab-count: 1">&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;</SPAN>// Convert the CONSTANT data to what we do have 
+to compute<o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>int x= 
+argv[0].toInt();<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>int y= 
+argv[1].toInt();<SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>// Just perform 
+the computation...<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>int fatt=1;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;</SPAN>for(int i = 1; 
+i &lt;= x; i++)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>fatt=fatt*i;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN>if( fatt == y)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>return true;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt 45pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;</SPAN>return false;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt 45pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">BUILTIN(fatt,io)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">if( argv[0].isInt() )<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN><SPAN style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>// Convert the CONSTANT data to what we do have to compute<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'">int x = argv[0].toInt();</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">// Just perform the computation...<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">int fatt = 1;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">for(int i = 1; i &lt;= x; i++)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-GB 
+style="mso-ansi-language: EN-GB; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>fatt=fatt*i;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">// Convert the result into the proper CONSTANT data<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt 35.4pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">// Save the result onto the output vector<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>argv[1] = CONSTANT( fatt );<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'"><SPAN style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>return true;</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=EN-GB 
+style="mso-ansi-language: EN-GB; mso-fareast-font-family: 'MS Mincho'">return false;</SPAN><SPAN lang=FR 
+style="mso-ansi-language: FR; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-GB 
+style="mso-ansi-language: EN-GB; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">BUILTIN(fatt,oi)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="COLOR: #111111">if( argv[1].isInt() )<o:p></o:p></SPAN></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{</SPAN><SPAN 
+lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>// Convert the CONSTANT data to 
+what we do have to compute<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>int x = argv[1].toInt();<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>// Just perform the computation... 
+<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>int fatt = 1;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>for(int i = 1; i &lt;= x; i++)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>fatt=fatt*i;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>if( fatt == x )<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>// Convert the result into 
+the proper CONSTANT data<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>// Save the result onto the 
+output vector<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>argv[0]=CONSTANT(i);<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>return true;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>return false;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#ifdef __cplusplus<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">#endif<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><FONT size=2><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">NOTE</SPAN></B><SPAN lang=EN-US 
+style="COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">: </SPAN></FONT><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">the builtin developer should pay attention to the type of 
+each element within argv, in order to proper manipulate data. </SPAN><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Please notice that in the examples the type check at the 
+very beginning of each oracle is performed only with respect to the input 
+variables; the output ones will be properly set within the oracle itself, since 
+they result as Null constants, at first.<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New" size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Compiling<o:p></o:p></SPAN></B></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></B></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-ansi-language: EN-US"><FONT size=3>Once it is completed, it is 
+sufficient to compile the source file:<o:p></o:p></FONT></SPAN></H2>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><FONT size=2><FONT face="Courier New"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">$ ./dynamic 
+</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">fatt_builtin<o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p><FONT face="Courier New">&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">where </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT face="Courier New" size=2>dynamic</FONT></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"> is a provided script which executes what is needed in order 
+to build the library. Note as no extension is given, compiling will result in a 
+“.so” file, which constitutes a dynamic library. <o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">It is worth noting that “.C” extension is omitted. 
+Furthermore multiple files can be compiled, and an unique library file (named as 
+the first file in the list) will be created. For instance:<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">$ ./dynamic prova1 prova2 prova3<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">will produce the file </SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT face="Courier New" size=2>prova1.so</FONT></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"> which will contain all oracles defined within the three 
+source files. <o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><B><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">Symbols vs Strings <o:p></o:p></SPAN></B></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'">In order to better clarify the difference between symbols 
+and strings in DLV, some examples follow.<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<H3 style="MARGIN: 0cm 0cm 0pt"><FONT size=3><SPAN lang=EN-US style="COLOR: #111111">Example 1. </SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold">Suppose having to manage IP addresses. An IP address appear 
+like<o:p></o:p></SPAN></FONT></H3>
+<H3 style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold"><o:p><FONT size=3>&nbsp;</FONT></o:p></SPAN></H3>
+<H3 style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold"><FONT size=3>160.97.47.136<o:p></o:p></FONT></SPAN></H3>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">containing characters which are not normally allowed. This 
+means that a fact like <o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">ip(160.97.47.136).<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">cannot be handled. So the term may be defined as quoted 
+string:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">ip(“160.97.47.136”).<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">where <I>ip</I> predicate represents a 
+valid IP address. Please note as the term is a string here, instead of a 
+symbolic name or an integer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"><SPAN 
+style="mso-spacerun: yes">&nbsp;</SPAN></SPAN><B><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt"><o:p></o:p></SPAN></B></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt"><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-bidi-font-size: 12.0pt">Example 
+2.</SPAN></B><SPAN lang=EN-US style="COLOR: #111111; mso-bidi-font-size: 12.0pt"> </SPAN><SPAN lang=EN-US style="COLOR: #111111">This suggests how, for instance, distinguish different 
+concepts, as showed in the following.<o:p></o:p></SPAN></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="COLOR: #111111; mso-bidi-font-size: 14.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<H3 style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt"><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-bidi-font-weight: bold">graph( “red” )</SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold"><FONT size=3> : </FONT></SPAN><I><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-bidi-font-weight: bold">“red”</SPAN></I><FONT size=3><SPAN 
+lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold"> is the 3-character string containing ‘r’, ‘e’ and ‘d’. 
+</SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-bidi-font-weight: bold; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN></FONT></H3>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">graph( red )</SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"> : 
+</SPAN><I><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">red</SPAN></I><I><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US"> 
+</SPAN></I><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-style: italic">is<I> </I></SPAN><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">a symbolic 
+name for the color ‘red’.<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="COLOR: #111111; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-bidi-font-size: 14.0pt">The user may exploit the former or the latter depending on 
+the meaning she wants to give express. <o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p>&nbsp;</o:p></SPAN></P>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; mso-ansi-language: EN-US">Using Externally Defined Predicates into dlv Programs<o:p></o:p></SPAN></H2>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-ansi-language: EN-US"><o:p><FONT size=3>&nbsp;</FONT></o:p></SPAN></H2>
+<H2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><FONT size=3><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-ansi-language: EN-US">In order to write dlv programs containing one or more 
+external builtins, you have simply to tell where to find libraries containing 
+oracles, using the </SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; FONT-FAMILY: Courier; mso-ansi-language: EN-US">#include</SPAN><SPAN lang=EN-US 
+style="FONT-WEIGHT: normal; COLOR: #111111; mso-ansi-language: EN-US"> directive. If you want to import a specific library just 
+write down the name:<o:p></o:p></SPAN></FONT></H2>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 53.4pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l1 level1 lfo5; tab-stops: list 53.4pt"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN style="mso-list: Ignore">1.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#include &lt; mylib &gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">or<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt 53.4pt; TEXT-INDENT: -18pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l1 level1 lfo5; tab-stops: list 53.4pt"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-fareast-font-family: 'Courier New'"><SPAN style="mso-list: Ignore">2.<SPAN 
+style="FONT: 7pt 'Times New Roman'">&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN></SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#include “/PATH/TO/mylib”<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; COLOR: #111111; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">Thus the system will import only the “mylib” library (the 
+“.so” extension when is omitted). <o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt">In the first case DLV looks for the specified library into 
+the default folder (i.e. ./LIB), while in the second the user has to provide the 
+full path.<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; COLOR: #111111; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US">A command</SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US"> line option can be specified in order to set a different 
+path (folders separated by colons):<o:p></o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.4pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">$ dlv [....]<SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN>-libpath=/usr/local/lib/dlv:/home/myuser/lib<o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US style="COLOR: #111111">Of course, DLV will look for the path of the libraries 
+specified whithin the DLV program among those provided by the command 
+line.</SPAN><SPAN lang=EN-US style="COLOR: #111111; mso-bidi-font-size: 12.0pt"><o:p></o:p></SPAN></P>
+<P class=MsoBodyText2 style="MARGIN: 0cm 0cm 0pt; mso-layout-grid-align: none"><SPAN lang=EN-US style="COLOR: #111111"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">NOTE</SPAN></B><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US">: default 
+folder is LIB, so, if the user defines her own lib folder, it will be considered 
+as different from LIB. <o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'">It is worth remembering that not including appropriate 
+libraries when exploiting external builtins into DLV programs will cause an 
+execution abortion. </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 12pt; FONT-FAMILY: 'Times New Roman'; mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt; mso-fareast-font-family: 'MS Mincho'"><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US 
+style="COLOR: red; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US style="mso-ansi-language: EN-US">Some Cares. </SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US">The user should pay 
+attention to the following.<o:p></o:p></SPAN></P>
+<UL style="MARGIN-TOP: 0cm" type=disc>
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l2 level1 lfo10; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt" 
+  >If multiple definitions for the same oracle are imported, 
+  only the first encountered will be adopted.</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US"><o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l2 level1 lfo10; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt" 
+  >More than one </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US" 
+  >#include</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt" 
+  > directive can be given, but all of</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US"> </SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US; mso-bidi-font-size: 10.0pt" 
+  >them have to be put at the beginning of the file 
+  containing the dlv program.</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US"><o:p 
+  ></o:p></SPAN> 
+  <LI class=MsoNormal 
+  style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none; mso-list: l2 level1 lfo10; tab-stops: list 36.0pt" 
+  ><SPAN lang=EN-US style="mso-ansi-language: EN-US" 
+  >The user can freely define ”standard” predicates having 
+  the same name of some builtin. For instance the same program may contain 
+  </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt" 
+  >p(...)</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US"> and </SPAN><SPAN 
+  lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt" 
+  >#p(...)</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US">, and they will be 
+  distinguished. On the other hand, the user cannot override some identifiers; 
+  think about predefined aggregates (</SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt" 
+  >#sum, #count</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US">, etc.) or keywords like 
+  </SPAN><SPAN lang=EN-US 
+  style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US; mso-bidi-font-size: 12.0pt" 
+  >#template</SPAN><SPAN lang=EN-US 
+  style="mso-ansi-language: EN-US">.<o:p 
+  ></o:p></SPAN></LI></UL>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify; mso-layout-grid-align: none"><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 14pt; COLOR: #111111; mso-ansi-language: EN-US">Overloading DLV “factory” Builtins<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">Library 
+developers may redefine “internal” DLV builtins. In order to do that, it is 
+simply enough to define a library containing proper oracles, and import it. The 
+actual names of the oracles are:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#less_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for <SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">&lt;<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#less_or_equal_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for <SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">&lt;=<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#greater_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for<SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">&gt;</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#greater_or_equal_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for<SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">&gt;=<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#not_equal_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for<SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">!=</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"> and </SPAN><B 
+style="mso-bidi-font-weight: normal"><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">&lt;&gt;</SPAN></B><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#plus_builti</SPAN></B><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">n</SPAN><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for <SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">+</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#times_builtin</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for<SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">*</SPAN></B><B style="mso-bidi-font-weight: normal"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></B></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#succ</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN>stands for<SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN></SPAN><B style="mso-bidi-font-weight: normal"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">#succ</SPAN></B><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US"><o:p></o:p></SPAN></P>
+<P class=MsoNormal 
+style="MARGIN: 0cm 0cm 0pt; tab-stops: 27.0pt 216.0pt 315.0pt"><SPAN lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">For instance, 
+the (final) user may write the following DLV program:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>#include 
+&lt;my_lib&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ok :- p(X), p(Y), X != 
+Y.<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">provided that 
+my_lib.so contains a definition such as:<o:p></o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><SPAN 
+style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoPlainText 
+style="MARGIN: 0cm 0cm 0pt; TEXT-INDENT: 35.45pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New">BUILTIN(not_equal_builtin,ii)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN><SPAN style="mso-tab-count: 1">&nbsp; </SPAN><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-spacerun: yes">&nbsp; 
+</SPAN><SPAN style="COLOR: #111111"><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp;</SPAN><SPAN 
+style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>…<o:p></o:p></SPAN></FONT></FONT></SPAN></P>
+<P class=MsoPlainText style="MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: justify"><SPAN lang=EN-US 
+style="COLOR: #111111; mso-ansi-language: EN-US; mso-fareast-font-family: 'MS Mincho'"><FONT size=2><FONT face="Courier New"><SPAN style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN 
+style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US"><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
+lang=EN-US style="mso-ansi-language: EN-US">In fact, DLV 
+will look for a proper oracle for </SPAN><SPAN lang=EN-US 
+style="FONT-SIZE: 10pt; FONT-FAMILY: 'Courier New'; mso-ansi-language: EN-US">!=(ii)</SPAN><SPAN lang=EN-US 
+style="mso-ansi-language: EN-US">, and will adopt the 
+“factory” one only if no other is found within the imported libraries.<BR></P>
+<HR>
+
+<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><o:p><FONT 
+size=2><EM><A href="mailto:dlv-ex@mat.unical.it">dlv-ex@mat.unical.it</A> 
+<BR>Last&nbsp;modified 
+2004-oct-28</EM></FONT></o:p></SPAN></P></div>
+</body>
+</html>
+

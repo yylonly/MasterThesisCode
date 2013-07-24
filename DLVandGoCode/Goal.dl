@@ -1,0 +1,58 @@
+#include <cost>
+#include <ListAndSet>
+#include <CSCM>
+#include <meanOfTwoNumber>
+
+#const goaltype = openservice.
+#const url = url4.
+
+#const rt = "8.00".
+#const av = "80.00".
+#const tr = "6.00".
+#const re = "10.00".
+#const pr = "0.00".
+#const rank = "8.00".
+
+#const w1 = "1".
+#const w2 = "1".
+#const w3 = "1".
+#const w4 = "1".
+#const w5 = "1".
+#const w6 = "1".
+#const w7 = "1".
+
+% Source Service
+atomService(rdec({var(password,string)}),
+sdec(checkpasswordSource),
+sign(goaltype, url),
+funcR({checkpassword}, {checkpassword}, {mycloud},
+in({}),
+out({var(password,string)})),
+nonFuncR(rt, av, tr, re, pr, rank)).
+
+% Target Service
+atomService(rdec({var(return,string)}),
+sdec(checkpasswordTarget),
+sign(goaltype, url),
+funcR({checkpassword}, {checkpassword}, {mycloud},
+in({var(return,string)}),
+out({})),
+nonFuncR(rt, av, tr, re, pr, rank)).
+
+atomService(rdec({var(parameters,lc),var(parameters,lcresponse)}),sdec(lc), sign(openservice, "http://www.translated.net/hts/soap.php"), funcR({lc},{hts}, {mycloud},in({var(parameters,lc)}), out({var(parameters,lcresponse)})), nonFuncR("413.62","99.00","8.90","80.00","0", "0")).
+atomService(rdec({var(parameters,status),var(parameters,statusresponse)}),sdec(status), sign(openservice, "http://www.translated.net/hts/soap.php"), funcR({status},{hts}, {mycloud},in({var(parameters,status)}), out({var(parameters,statusresponse)})), nonFuncR("413.62","99.00","8.90","80.00","0", "0")).
+atomService(rdec({var(imageinputurl,string), var(imageoutputfilename,string), var(flatten,boolean),var(return,string)}),sdec(imageconvert), sign(openservice, "http://www.bigislandcolor.com/icserver.php"), funcR({imageconvert},{imageconvert}, {mycloud},in({var(imageinputurl,string), var(imageoutputfilename,string), var(flatten,boolean)}), out({var(return,string)})), nonFuncR("564.00","83.00","13.70","89.00","0", "0")).
+atomService(rdec({var(insertion,insertion), var(sessionid,string), var(webapikey,string),var(status,string)}),sdec(docounterdelete), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({docounterdelete},{otomotowebapi}, {mycloud},in({var(insertion,insertion), var(sessionid,string), var(webapikey,string)}), out({var(status,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(webapikey,string), var(email,string), var(name,string), var(surname,string),var(result,string)}),sdec(dodatastorage), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({dodatastorage},{otomotowebapi}, {mycloud},in({var(webapikey,string), var(email,string), var(name,string), var(surname,string)}), out({var(result,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(insertion,insertion), var(sessionid,string), var(webapikey,string),var(expirationdate,string), var(modificationdatetime,string)}),sdec(dodealerinsertionactivate), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({dodealerinsertionactivate},{otomotowebapi}, {mycloud},in({var(insertion,insertion), var(sessionid,string), var(webapikey,string)}), out({var(expirationdate,string), var(modificationdatetime,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(insertion,insertion), var(sessionid,string), var(webapikey,string),var(status,string), var(removedate,string), var(modificationdatetime,string)}),sdec(dodealerinsertioninactivate), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({dodealerinsertioninactivate},{otomotowebapi}, {mycloud},in({var(insertion,insertion), var(sessionid,string), var(webapikey,string)}), out({var(status,string), var(removedate,string), var(modificationdatetime,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(email,string), var(password,string),var(return,string)}),sdec(login), sign(openservice, "http://demo.sympa.org/soap"), funcR({login},{sympasoap}, {mycloud},in({var(email,string), var(password,string)}), out({var(return,string)})), nonFuncR("994.26","30.00","2.80","67.00","0", "0")).
+
+atomService(rdec({var(email,string)}),sdec(checkcookie), sign(openservice, "http://demo.sympa.org/soap"), funcR({checkcookie},{sympasoap}, {mycloud},in({}), out({var(email,string)})), nonFuncR("994.26","30.00","2.80","67.00","0", "0")).
+
+atomService(rdec({var(testhellostring,string),var(returnstring,string)}),sdec(dohello), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({dohello},{otomotowebapi}, {mycloud},in({var(testhellostring,string)}), out({var(returnstring,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(insertion,insertion), var(sessionid,string), var(webapikey,string),var(status,string)}),sdec(doinsertiondelete), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({doinsertiondelete},{otomotowebapi}, {mycloud},in({var(insertion,insertion), var(sessionid,string), var(webapikey,string)}), out({var(status,string)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+atomService(rdec({var(insertion,insertion), var(sessionid,string), var(webapikey,string),var(status,string), var(errorlist,arrayofformerrors), var(insertion,insertion)}),sdec(doinsertionedit), sign(openservice, "http://otomoto.wp.pl:80/webapi/server.php"), funcR({doinsertionedit},{otomotowebapi}, {mycloud},in({var(insertion,insertion), var(sessionid,string), var(webapikey,string)}), out({var(status,string), var(errorlist,arrayofformerrors), var(insertion,insertion)})), nonFuncR("327.13","13.00","5.10","67.00","0", "0")).
+
+
+

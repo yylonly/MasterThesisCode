@@ -1,0 +1,71 @@
+#!/bin/sh
+# Shared library 
+
+SYNOPSYS="DLV library tool
+=== 
+Usage: $0 COMMAND LIBRARYNAME [INSTALLDIR] 
+-
+Commands are:
+
+create  : build the library from the source file LIBRARYNAME.
+clean   : clean stuff generated while creating LIBRARYNAME.
+install : requires INSTALLDIR as additional parameter; install LIBRARYNAME to INSTALLDIR.
+
+"
+
+FILE="$2"
+CLIB=$FILE.C
+OLIB=$FILE.o
+LOLIB=$FILE.lo
+LALIB=$FILE.la
+LIBTOOL=libtool
+# When compiling under MacOS/Darwin uncomment the following line
+#LIBTOOL=glibtool
+
+
+if [ $# -lt 2 ] ; then
+  echo "$SYNOPSYS"
+elif [ $# -gt 3 ] ; then
+  echo "$SYNOPSYS"
+else
+  case $1 in
+    create)
+      if [ $# != 2 ] ; then
+        echo "$SYNOPSYS"
+      else
+        echo "DLV library manager: creating library ==> $FILE <=="
+        # $FILE.C is the C++ input file. Create shared library's object file.
+        $LIBTOOL --mode=compile g++ -g -O -c $CLIB
+        # Create shared library.
+        # Use -lc to link it against C library, since input file depends on the C library.
+        $LIBTOOL --mode=link g++ -no-undefined -avoid-version -module -g -O -o $LALIB $LOLIB extpred.lo -rpath /usr/local/lib -lm	
+      fi
+      break
+      ;;
+    clean)
+      if [ $# != 2 ] ; then
+        echo "$SYNOPSYS"
+      else
+        echo "DLV library creator: cleaning stuff for library ==> $FILE <=="
+        $LIBTOOL --mode=clean rm -f $LOLIB $LALIB $LALIB
+        rm -fr .libs/$FILE.* $LOLIB $LALIB $OLIB.o
+      fi
+      break
+      ;;
+    install)
+      if [ $# != 3 ] ; then
+        echo "$SYNOPSYS"
+      else
+        echo "DLV library creator: installing library ==> $FILE <== to ==> $3 <== "
+        mkdir -p $3
+        $LIBTOOL --mode=install cp $LALIB $3
+        rm -f $3/$FILE*.a $3/$FILE*.la
+      fi
+      break
+      ;;
+    *)
+      echo "$SYNOPSIS"
+  esac
+fi
+
+

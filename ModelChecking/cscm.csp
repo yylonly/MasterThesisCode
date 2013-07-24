@@ -1,0 +1,56 @@
+﻿#define NumberOfUser 3;
+#define NumberOfRequirement 20;
+
+enum{BPMN, WSDL, BPEL, FormalForm, FeedBack, NewBPEL, BPELAck};
+
+channel comit 5;
+channel result 5;
+channel feedbacksumbit 5;
+channel feedbackreturn 5;
+
+var specification = BPMN;
+var contract;
+var design;
+var program;
+var sat[NumberOfUser];
+
+var UnmathedService = NumberOfRequirement;
+var matchedNumber;
+var num = 0;
+
+User(i) = comit!specification.i -> (result?BPEL.i{sat[i]=1} -> FeedUser(i) <> result?BPEL.i{sat[i]=0} -> FeedUser(i));
+
+FeedUser(i) = ([sat[i] == 0](feedbacksumbit!FeedBack.i -> feedbackreturn?NewBPEL.i -> serviceInvoking -> User(i)) 
+    [] ([sat[i] == 1]feedbacksumbit!BPELAck.i -> serviceInvoking ->  User(i)));
+
+
+Cloud() = comit?BPMN.x{num = x} -> transformRequirementIntoFormalForm{contract = FormalForm;} -> ServiceIntelligent();
+
+ServiceIntelligent() = [UnmathedService == 0]{design = FormalForm} -> Development() 
+ [] [UnmathedService != 0](
+    
+    (serviceDiscovery{UnmathedService--; matchedNumber = 0;} ->
+    ([matchedNumber == 0]serviceComposition -> ServiceIntelligent()  
+     [] [matchedNumber > 1]serviceSelection -> ServiceIntelligent() 
+     [] [matchedNumber == 1]ServiceIntelligent()))
+     
+     <> (serviceDiscovery{UnmathedService--; matchedNumber = 1;} -> 
+        ([matchedNumber == 0]serviceComposition -> ServiceIntelligent()  
+        [] [matchedNumber > 1]serviceSelection -> ServiceIntelligent() 
+        [] [matchedNumber == 1]ServiceIntelligent()))
+     
+     <> (serviceDiscovery{UnmathedService--; matchedNumber = 2;} -> 
+        ([matchedNumber == 0]serviceComposition -> ServiceIntelligent()  
+        [] [matchedNumber > 1]serviceSelection -> ServiceIntelligent() 
+        [] [matchedNumber == 1]ServiceIntelligent())));
+ 
+Development() = bpelGenerate{program = BPEL} ->  developmentBEPL -> result!program.num -> FeedCloud();
+  
+FeedCloud() =  feedbacksumbit?feed.fnum -> ([feed == BPELAck && fnum == num]Cloud() 
+  [] ([feed == FeedBack && fnum == num]reDevelopmentBEPL{program = NewBPEL} -> feedbackreturn!program.num -> Cloud()));
+
+CSCM() = (||x:{0..NumberOfUser-1}@User(x)) || Cloud();
+
+
+#assert CSCM() divergencefree;
+#assert CSCM() deadlockfree;

@@ -1,0 +1,63 @@
+% Define  Composition Rules
+
+% composition service
+atomService(rdec(#union(CIN, COUT)),
+sdec(cp(ServiceNameA, ServiceNameB)), sign(#newType(TypeA, TypeB), #newUrl(new)),
+funcR(#union(DescA, DescB), #union(ClassA, ClassB), DomainA,
+in(CIN),
+out(COUT)),
+nonFuncR(#mean(RTA,RTB), #mean(AvailabilityA, AvailabilityB), #mean(ThroughputA, ThroughputB), 
+#mean(ReliabilityA, ReliabilityB), #mean(PriceA, PriceB), #mean(RankA, RankB)))
+
+% first service
+:- atomService(rdec(RDEC1),
+sdec(ServiceNameA), sign(TypeA, URLA),
+funcR(DescA, ClassA, DomainA,
+in(IN1),
+out(OUT1)),
+nonFuncR(RTA, AvailabilityA, ThroughputA, ReliabilityA, PriceA, RankA)),
+
+% second service
+atomService(rdec(RDEC2),
+sdec(ServiceNameB), sign(TypeB, URLB),
+funcR(DescB, ClassB, DomainB,
+in(IN2),
+out(OUT2)),
+nonFuncR(RTB, AvailabilityB, ThroughputB, ReliabilityB, PriceB, RankB)),
+
+% computing some collection
+#intersection(OUT1, IN2, INTERNEL), #intersection(IN1, OUT2, EXTERNEL), 
+#union(#difference(IN1, EXTERNEL), #difference(IN2, INTERNEL), CIN),
+#union(#difference(OUT1, INTERNEL), #difference(OUT2, EXTERNEL), COUT),
+
+% compostion condition:
+#typeOrder(goaltype, TypeA), #typeOrder(goaltype, TypeB),
+#card(INTERNEL) != 0,
+DomainA == DomainB, ServiceNameA != ServiceNameB.
+
+
+% Define Compute Cost
+composition(ServiceName, sign(Type, URL), funcR(Desc, Class, Domain, in(IN), out(OUT)),
+nonFuncR(RT, Availability, Throughput, Reliability, Price, Rank), 
+#costZZ(RT, Availability, Throughput, Reliability, Price, Rank, Type, rt, av, tr, re, pr, rank, goaltype)) 
+%10)
+:- atomService(rdec(R),
+sdec(ServiceName), sign(Type, URL),
+funcR(Desc, Class, Domain,
+in(IN),
+out(OUT)),
+nonFuncR(RT, Availability, Throughput, Reliability, Price, Rank)), #card(IN) == 0, #card(OUT) == 0.
+
+
+% Mimnize
+ resultcost(X) :- #min{Cost, ServiceName : composition(ServiceName, sign(Type, URL), 
+ funcR(Desc, Class, Domain, in(IN), out(OUT)),
+ nonFuncR(RT, Availability, Throughput, Reliability, Price, Rank), Cost)} = X.
+ 
+ result(ServiceName, sign(Type, URL), funcR(Desc, Class, Domain, in(IN), out(OUT)), nonFuncR(RT, Availability, Throughput, Reliability, Price, Rank), CT)
+ :-
+ composition(ServiceName, sign(Type, URL), 
+ funcR(Desc, Class, Domain, in(IN), out(OUT)),
+ nonFuncR(RT, Availability, Throughput, Reliability, Price, Rank), CT), resultcost(CC), CT == CC.
+ 
+ 

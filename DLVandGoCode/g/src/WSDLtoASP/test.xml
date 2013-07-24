@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<QOS>
+            <RT>1306</RT> 
+            <AV>73</AV>
+            <TH>1.2</TH>
+            <SS>74</SS>
+            <RR>73</RR> 
+            <CO>89</CO>
+            <BP>75</BP> 
+            <LA>259.5</LA> 
+            <Do>12</Do>
+</QOS>
+
